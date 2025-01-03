@@ -1,19 +1,38 @@
 import type React from "react";
 import { CheckCircle2, XCircle, Plus } from "lucide-react";
 import type { CandidateMatch } from "~/types/types";
+import { useEffect, useRef } from "react";
 
 interface SkillsAssessmentProps {
   data: CandidateMatch;
 }
 
 const SkillsAssessment: React.FC<SkillsAssessmentProps> = ({ data }) => {
+  const componentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    componentRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
   return (
-    <div className="mt-12 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm rounded-xl p-8 border border-gray-200 dark:border-gray-800">
-      <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+    <div
+      ref={componentRef}
+      className="mt-12 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm rounded-xl p-8 border border-gray-200 dark:border-gray-800 animate-fade-in"
+    >
+      <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent animate-slide-up">
         Skills Assessment
       </h2>
 
       <div className="grid gap-8 mb-8">
+        <div className="mt-4 p-6 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-lg">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-200 mb-3">
+            Summary
+          </h3>
+          <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+            {data.suitability_summary}
+          </p>
+        </div>
+
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400" />
@@ -56,7 +75,7 @@ const SkillsAssessment: React.FC<SkillsAssessmentProps> = ({ data }) => {
           <div className="flex items-center gap-2">
             <Plus className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
             <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-200">
-              Additional Skills
+              Additional Skills Joris
             </h3>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -70,15 +89,6 @@ const SkillsAssessment: React.FC<SkillsAssessmentProps> = ({ data }) => {
             ))}
           </div>
         </div>
-      </div>
-
-      <div className="mt-8 p-6 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-lg">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-200 mb-3">
-          Summary
-        </h3>
-        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-          {data.suitability_summary}
-        </p>
       </div>
     </div>
   );

@@ -12,21 +12,37 @@ const mockData = {
   ok: true,
   data: {
     candidateMatch: {
-      matched_skills: ["React"],
-      missing_skills: [
-        ".NET",
-        "C#",
-        "Microservices architecture",
-        "REST or GraphQL APIs",
-        "Kafka",
+      matched_skills: [
+        "React",
+        "REST and/or GraphQL APIs",
         "Docker",
         "Kubernetes",
-        "Continuous Integration systems",
-        "Analytical and problem-solving skills",
+        "Azure",
+        "Node.js",
+        "Express.js",
+        "Mentoring",
+        "SCRUM",
+        "Collaboration",
       ],
-      additional_skills: ["JavaScript", "TypeScript", "Remix", "Node.js"],
+      missing_skills: ["C#", "microservices architecture", "Kafka", ".NET"],
+      additional_skills: [
+        "JavaScript",
+        "TypeScript",
+        "Remix",
+        "Next.js",
+        "HTML5",
+        "CSS3",
+        "SQL",
+        "NoSQL",
+        "Redis",
+        "Git",
+        "API development",
+        "AI technologies",
+        "Nest.js",
+        "Cloud platforms",
+      ],
       suitability_summary:
-        "The candidate has experience with React, which matches one of the key requirements of the job. However, they lack experience in other critical technologies and skills required for the role, making them less suitable for the position.",
+        "The candidate has several matching skills such as strong React expertise, experience with REST and GraphQL APIs, Docker, Kubernetes, and knowledge of Azure, which align with the job requirements. However, they lack experience in core technologies required for the role, such as C#, microservices architecture, and .NET, which are critical for the position. Their strong backend and full stack experience can be beneficial, but the focus on .NET and C# suggests the candidate may not be a perfect fit for this role. A recommendation would be to consider the candidate for roles with a stronger emphasis on Node.js or JavaScript frameworks.",
     },
     rawText: "",
   },
@@ -55,7 +71,7 @@ export async function action({ request }: ActionFunctionArgs) {
       }
 
       // MOCK DATA
-      // return mockData;
+      return mockData;
 
       parsedSkills = await extractSkillsFromFile(
         file,
@@ -73,6 +89,7 @@ export default function Start() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [showResults, setShowResults] = useState(true);
   const formRef = useRef<HTMLFormElement>(null);
+
   const {
     ok,
     data: { candidateMatch } = {
