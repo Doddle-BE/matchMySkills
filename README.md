@@ -1,40 +1,15 @@
-# Welcome to Remix!
+# Skills Assessment
 
-- 📖 [Remix docs](https://remix.run/docs)
+## Description
 
-## Development
+This is a skills assessment tool that allows you to analyze the skills of a candidate and compare them with the skills required for a job vacancy.
 
-Run the dev server:
+## Technologies
 
-```shellscript
-npm run dev
-```
+- OpenAI (AI)
+- Remix (Framework)
+- Tailwind CSS (Styling)
 
-## Deployment
+##
 
-First, build your app for production:
-
-```sh
-npm run build
-```
-
-Then run the app in production mode:
-
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+![Skills Assessment](./public/projectScreenshot.png)
