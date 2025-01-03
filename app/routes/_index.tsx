@@ -70,8 +70,10 @@ export async function action({ request }: ActionFunctionArgs) {
         return { ok: false, error: "File is empty", data: parsedSkills };
       }
 
-      // MOCK DATA
-      return mockData;
+      if (process.env.NODE_ENV === "development") {
+        // MOCK DATA ONLY FOR DEVELOPMENT
+        return mockData;
+      }
 
       parsedSkills = await extractSkillsFromFile(
         file,
