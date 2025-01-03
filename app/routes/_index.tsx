@@ -55,7 +55,7 @@ export async function action({ request }: ActionFunctionArgs) {
       }
 
       // MOCK DATA
-      // return mockData;
+      return mockData;
 
       parsedSkills = await extractSkillsFromFile(
         file,
@@ -71,6 +71,7 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function Start() {
   const actionData = useActionData<typeof action>();
   const [newFileIsSelected, setNewFileIsSelected] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const formRef = useRef<HTMLFormElement>(null);
   const {
     ok,
@@ -94,10 +95,31 @@ export default function Start() {
     }
   }, [ok]);
 
-  return (
-    <div className="w-full max-w-4xl mx-auto p-6">
-      <Header />
+  useEffect(() => {
+    // Check localStorage first
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === "dark");
+      document.documentElement.classList.toggle("dark", savedTheme === "dark");
+    } else {
+      // If no saved preference, check system preference
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      setIsDarkMode(prefersDark);
+      document.documentElement.classList.toggle("dark", prefersDark);
+    }
+  }, []);
 
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+    document.documentElement.classList.toggle("dark");
+    localStorage.setItem("theme", !isDarkMode ? "dark" : "light");
+  };
+
+  return (
+    <div className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 min-h-screen">
+      <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
       <Form ref={formRef} method="post" encType="multipart/form-data">
         <FileUpload
           newFileIsSelected={() => {
@@ -113,7 +135,6 @@ export default function Start() {
         </div>
       )}
 
-      {/* render whole candidateMatch object with all the properties */}
       {ok === true && candidateMatch && !newFileIsSelected && (
         <div className="mt-4">
           <SkillsAssessment data={candidateMatch} />
