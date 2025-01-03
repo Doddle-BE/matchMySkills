@@ -3,7 +3,7 @@ import { isCandidateMatch, type ParsedSkills } from "~/types/types";
 
 const SYSTEM_PROMPT = `You are a skills analysis assistant that MUST ONLY respond with JSON. Do not include any markdown, explanations, or other text.
 
-Analyze the skills listed in a job vacancy and compare them with the skills of a job candidate to assess suitability.
+Analyze the skills listed in a job vacancy and compare them with the skills of a job candidate to assess suitability. In your suitability summary, you must include the candidate's experience and the job vacancy requirements. You must give some thought or if the candidate is a good fit for the job. Based on this summary, a recommendation is made.
 
 Your response must be a single JSON object with exactly these fields:
 {
@@ -28,7 +28,7 @@ Example output:
   "suitability_summary": "The candidate is partially suitable, possessing some key skills required for the job."
 }`;
 
-const SKILLS_EXTRACTION_PROMPT = `I have a job vacancy document and would like to analyze how well a candidate's skills match the requirements. The candidate has experience with:
+const SKILLS_EXTRACTION_PROMPT = `I have a job vacancy document and would like to analyze how well a candidate's skills match the requirements. The candidate is a full stack Javascript developer with 7 years of experience. The candidate particularly likes to work as a developer with a slight preference for the backend.
 
 Technical Skills (strong experience):
 
@@ -64,7 +64,8 @@ Code review expertise
 Pair programming
 SCRUM methodology
 Strong collaborative skills
-Multilingual communication (English & French work environments)
+Native Dutch speaker
+Multilingual communication (English work environments)
 UI/UX implementation
 Experience with translating Figma designs to code
 Continuous learning mindset
@@ -92,11 +93,18 @@ async function setupThread(openai: OpenAI, threadId: string, fileId: string) {
 async function parseAssistantResponse(
   responseText: string
 ): Promise<ParsedSkills> {
+  let parsedResponse: ParsedSkills;
   const cleanedText = responseText
     .replace(/```json\n?/g, "")
     .replace(/```\n?/g, "")
     .trim();
-  const parsedResponse = JSON.parse(cleanedText);
+  try {
+    parsedResponse = JSON.parse(cleanedText);
+  } catch (error) {
+    throw new Error(
+      "Error parsing skills - please check if you have provided a valid job vacancy document."
+    );
+  }
 
   // check if parsedResponse is of type candidateMatch
   if (!isCandidateMatch(parsedResponse)) {

@@ -55,7 +55,7 @@ export async function action({ request }: ActionFunctionArgs) {
       }
 
       // MOCK DATA
-      return mockData;
+      // return mockData;
 
       parsedSkills = await extractSkillsFromFile(
         file,
@@ -70,8 +70,8 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 export default function Start() {
   const actionData = useActionData<typeof action>();
-  const [newFileIsSelected, setNewFileIsSelected] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [showResults, setShowResults] = useState(true);
   const formRef = useRef<HTMLFormElement>(null);
   const {
     ok,
@@ -88,12 +88,6 @@ export default function Start() {
 
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
-
-  useEffect(() => {
-    if (ok) {
-      setNewFileIsSelected(false);
-    }
-  }, [ok]);
 
   useEffect(() => {
     // Check localStorage first
@@ -117,15 +111,19 @@ export default function Start() {
     localStorage.setItem("theme", !isDarkMode ? "dark" : "light");
   };
 
+  useEffect(() => {
+    if (isSubmitting) {
+      setShowResults(false);
+    } else if (actionData?.ok) {
+      setShowResults(true);
+    }
+  }, [isSubmitting, actionData]);
+
   return (
     <div className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 min-h-screen">
       <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
       <Form ref={formRef} method="post" encType="multipart/form-data">
-        <FileUpload
-          newFileIsSelected={() => {
-            setNewFileIsSelected(true);
-          }}
-        />
+        <FileUpload newFileIsSelected={() => setShowResults(false)} />
         <SubmitButton isSubmitting={isSubmitting} />
       </Form>
 
@@ -135,7 +133,7 @@ export default function Start() {
         </div>
       )}
 
-      {ok === true && candidateMatch && !newFileIsSelected && (
+      {ok === true && candidateMatch && showResults && (
         <div className="mt-4">
           <SkillsAssessment data={candidateMatch} />
         </div>
