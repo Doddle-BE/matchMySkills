@@ -89,6 +89,30 @@ const SkillsAssessment: React.FC<SkillsAssessmentProps> = ({ data }) => {
             ))}
           </div>
         </div>
+
+        <div className="mt-8 p-6 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-lg">
+          <p className="text-gray-600 dark:text-gray-300">
+            <span className="font-semibold">
+              Did the AI suggest we're a great fit?
+            </span>{" "}
+            Fantastic! Let's connect:
+          </p>
+
+          <ul className="list-disc pl-5 text-gray-600 dark:text-gray-300 space-y-2 mt-4">
+            <li>
+              💼 Find me on LinkedIn:{" "}
+              <a
+                href="https://www.linkedin.com/in/jorisheyens/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 dark:text-indigo-400 hover:underline"
+              >
+                https://www.linkedin.com/in/jorisheyens/
+              </a>
+            </li>
+            <li>🗣️ Message me on LinkedIn to schedule a call!</li>
+          </ul>
+        </div>
       </div>
     </div>
   );

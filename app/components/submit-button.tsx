@@ -16,7 +16,7 @@ export function SubmitButton({ isSubmitting }: SubmitButtonProps) {
             : "bg-indigo-600 hover:bg-indigo-700 dark:bg-gradient-to-r dark:from-indigo-600 dark:to-indigo-500 dark:hover:from-indigo-500 dark:hover:to-indigo-600 shadow-lg shadow-indigo-500/20 dark:shadow-indigo-500/25 hover:shadow-indigo-500/30 dark:hover:shadow-indigo-500/40"
         } text-white`}
     >
-      {isSubmitting ? <LoadingSpinner /> : "Analyze Document"}
+      {isSubmitting ? <LoadingSpinner /> : "Analyze"}
     </button>
   );
 }

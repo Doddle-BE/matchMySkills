@@ -7,6 +7,7 @@ import SkillsAssessment from "~/components/skills-assessment";
 import { SubmitButton } from "~/components/submit-button";
 import { extractSkillsFromFile } from "~/server/openai/skillsExtractor.server";
 import type { ParsedSkills } from "~/types/types";
+import { DisclosureDialog } from "~/components/disclosure-dialog";
 
 const mockData = {
   ok: true,
@@ -86,11 +87,14 @@ export async function action({ request }: ActionFunctionArgs) {
     return { ok: false, error: (error as Error).message, data: parsedSkills };
   }
 }
+
 export default function Start() {
   const actionData = useActionData<typeof action>();
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [showResults, setShowResults] = useState(true);
+  const [showContent, setShowContent] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  const [showDisclosure, setShowDisclosure] = useState(true);
 
   const {
     ok,
@@ -138,25 +142,52 @@ export default function Start() {
     }
   }, [isSubmitting, actionData]);
 
+  useEffect(() => {
+    const hasAccepted = localStorage.getItem("disclosureAccepted") === "true";
+    setShowDisclosure(!hasAccepted);
+  }, []);
+
+  useEffect(() => {
+    // Small delay to allow for smooth fade-in
+    const timer = setTimeout(() => {
+      setShowContent(true);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 min-h-screen">
-      <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-      <Form ref={formRef} method="post" encType="multipart/form-data">
-        <FileUpload newFileIsSelected={() => setShowResults(false)} />
-        <SubmitButton isSubmitting={isSubmitting} />
-      </Form>
+    <div className="min-h-screen">
+      <DisclosureDialog
+        isOpen={showDisclosure}
+        onClose={() => setShowDisclosure(false)}
+      />
 
-      {ok === false && error && (
-        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-600">Error: {error}</p>
-        </div>
-      )}
+      <div
+        className={`transition-opacity duration-500 ${
+          showContent ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <div className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 min-h-screen">
+          <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+          <Form ref={formRef} method="post" encType="multipart/form-data">
+            <FileUpload newFileIsSelected={() => setShowResults(false)} />
+            <SubmitButton isSubmitting={isSubmitting} />
+          </Form>
 
-      {ok === true && candidateMatch && showResults && (
-        <div className="mt-4">
-          <SkillsAssessment data={candidateMatch} />
+          {ok === false && error && (
+            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600">Error: {error}</p>
+            </div>
+          )}
+
+          {ok === true && candidateMatch && showResults && (
+            <div className="mt-4">
+              <SkillsAssessment data={candidateMatch} />
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
